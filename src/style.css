@@ -16,7 +16,7 @@
     height: 100%;
 }
 
-.choose-word{
+.hangman button{
     position: absolute;
     top: 60px;
     right: 0px;
@@ -48,9 +48,18 @@
     gap: 10px;
 }
 
-.letter{
+.letters button{
     width: 60px;
     height: 60px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    background-color: #9FAAB5;
+    color: #79828D;
+
+    border:none;
+    border-radius: 5px;
 }
 
 .guess{
@@ -83,4 +92,33 @@
 
     border-radius: 5px;
     border: solid 1px;
+}
+
+.letters .enabled{
+    background-color: #E1ECF4;
+    color: #3973A0;
+
+    border: solid 1px;
+}
+
+.targetWord{
+    position: absolute;
+    right: 60px;
+    bottom: 60px;
+
+    display: flex;
+    gap: 10px;
+}
+
+u{
+    font-size: 100px;
+}
+
+.targetWord p{
+    font-size: 40px;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 10px;
+    color: transparent;
+    text-decoration-color: black;
 }
