@@ -1,0 +1,86 @@
+*{
+    box-sizing: border-box;
+}
+.hangman{
+    width: 50%;
+    height: 650px;
+
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+
+    position: relative;
+}
+
+.hangman img{
+    height: 100%;
+}
+
+.choose-word{
+    position: absolute;
+    top: 60px;
+    right: 0px;
+
+    background-color: #139E4F;
+    color:white;
+
+    border: none;
+    border-radius: 5px;
+
+    height: 50px;
+    width: 150px;
+
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.letters{
+    width: 50%;
+
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.letter{
+    width: 60px;
+    height: 60px;
+}
+
+.guess{
+    width: 50%;
+
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.guess input{
+    width: 40%;
+    height: 30px;
+}
+
+.guess button{
+    height: 35px;
+
+    background-color: #E1ECF4;
+    color: #78A0BD;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    border-radius: 5px;
+    border: solid 1px;
+}
