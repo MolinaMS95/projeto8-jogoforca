@@ -122,3 +122,8 @@ u{
     color: transparent;
     text-decoration-color: black;
 }
+
+.targetWord .visible{
+    color: black;
+    text-decoration: none;
+}

@@ -14,25 +14,63 @@ import palavras from "./assets/palavras.js"
 
 export default function App() {
     const hangmanStates = [hangman0, hangman1, hangman2, hangman3, hangman4, hangman5, hangman6];
+
     const [hangman, setHangman] = React.useState(hangmanStates[0])
     const [isEnabledInput, enableInput] = React.useState(true)
-    const [isEnabledLetter, enableLetter] = React.useState(true)
-    const [enabledClass, setEnabledClass] = React.useState('')
     const [myWord, setMyWord] = React.useState([])
-    const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+    const alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    const newAlphabet = [];
+    for (let i = 0; i < alphabet.length; i++){
+        newAlphabet[i] = {letter: alphabet[i], disable: true, status: ""}
+    }
+    const [letters, setLetters] = React.useState(newAlphabet)
 
     function chooseWord() {
         const randomIndex = Math.floor(Math.random() * palavras.length)
         const word = palavras[randomIndex]
+        console.log(word)
         const wordArray = [];
         for (let i = 0; i < word.length; i++){
-            wordArray[i] = word[i]
+            wordArray[i] = {letter: word[i], visibility: ""}
         }
         setMyWord(wordArray)
 
+        const newLetters = [...letters]
+        for(let i = 0; i < newLetters.length; i++){
+            newLetters[i].disable = false
+            newLetters[i].status = "enabled"
+        }
+        setLetters(newLetters)
         enableInput(false)
-        enableLetter(false)
-        setEnabledClass('enabled')
+    }
+
+    function Alphabet(props){
+
+        function pressLetter(){
+            const newLetters = [...letters]
+            newLetters[props.index].disable = true
+            newLetters[props.index].status = ""
+            setLetters(newLetters)
+
+            let containLetter = false
+            const newMyWord = [...myWord]
+            for(let i = 0; i < myWord.length; i++){
+                let letter = myWord[i].letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                if (letter === props.letter.toLowerCase()){
+                    containLetter = true
+                    newMyWord[i].visibility = "visible"
+                }
+            }
+            if(!containLetter){
+                let errors = hangmanStates.indexOf(hangman)
+                setHangman(hangmanStates[errors+1])
+            }
+        }
+
+        return(
+            <button onClick={pressLetter} className={props.class} disabled={props.isDisabled}>{props.letter}</button>
+        )
     }
 
     return (
@@ -41,12 +79,14 @@ export default function App() {
                 <img src={hangman} alt={hangman} />
                 <button onClick={chooseWord}>Escolher Palavra</button>
                 <div className="targetWord">
-                    {myWord.map((letter, index) => <p key={index}>{letter}</p>)}
+                    {myWord.map((letter, index) => <p key={index} className={letter.visibility}>{letter.letter}</p>)}
                 </div>
             </main>
+
             <section className="letters">
-                {alfabeto.map((letter, index) => <button className={enabledClass} key={index} disabled={isEnabledLetter}>{letter.toUpperCase()}</button>)}
+                {letters.map((letter, index) => <Alphabet index={index} class={letter.status} key={index} isDisabled={letter.disable} letter={letter.letter.toUpperCase()}/>)}
             </section>
+
             <section className="guess">
                 <p>Já sei a palavra!</p>
                 <input disabled={isEnabledInput} />
