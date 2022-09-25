@@ -12,12 +12,15 @@ import hangman5 from "./assets/forca5.png"
 import hangman6 from "./assets/forca6.png"
 import palavras from "./assets/palavras.js"
 
+let hits = 0;
+
 export default function App() {
     const hangmanStates = [hangman0, hangman1, hangman2, hangman3, hangman4, hangman5, hangman6];
 
     const [hangman, setHangman] = React.useState(hangmanStates[0])
     const [isEnabledInput, enableInput] = React.useState(true)
     const [myWord, setMyWord] = React.useState([])
+    const [guess, setGuess] = React.useState("")
 
     const alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
     const newAlphabet = [];
@@ -41,8 +44,10 @@ export default function App() {
             newLetters[i].disable = false
             newLetters[i].status = "enabled"
         }
+        hits = 0
         setLetters(newLetters)
         enableInput(false)
+        setHangman(hangmanStates[0])
     }
 
     function Alphabet(props){
@@ -54,32 +59,78 @@ export default function App() {
             setLetters(newLetters)
 
             let containLetter = false
-            const newMyWord = [...myWord]
             for(let i = 0; i < myWord.length; i++){
                 let letter = myWord[i].letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                 if (letter === props.letter.toLowerCase()){
+                    hits++
                     containLetter = true
-                    newMyWord[i].visibility = "visible"
+                    myWord[i].visibility = "visible"
                 }
+            }
+            if(hits === myWord.length){
+                const correctAnswer = [...myWord]
+                for(let i = 0; i < myWord.length; i++){
+                correctAnswer[i].visibility = "won"
+                setMyWord(correctAnswer)
+                }
+                enableInput(true)
+                setLetters(newAlphabet)
             }
             if(!containLetter){
                 let errors = hangmanStates.indexOf(hangman)
                 setHangman(hangmanStates[errors+1])
+                if ((errors+1) === 6){
+                    const wrongAnswer = [...myWord]
+                    for(let i = 0; i < myWord.length; i++){
+                        wrongAnswer[i].visibility = "lost"
+                        setMyWord(wrongAnswer)
+                    }
+                    enableInput(true)
+                    setLetters(newAlphabet)
+                }
             }
         }
 
         return(
-            <button onClick={pressLetter} className={props.class} disabled={props.isDisabled}>{props.letter}</button>
+            <button onClick={pressLetter} className={props.class} disabled={props.isDisabled} data-identifier="letter">{props.letter}</button>
         )
+    }
+
+    function checkGuess(){
+        const answer = guess.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        let word = ""
+        for(let i = 0; i < myWord.length; i++){
+            let letter = myWord[i].letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            word += letter
+        }
+        if(answer === word){
+            const correctAnswer = [...myWord]
+            for(let i = 0; i < myWord.length; i++){
+                correctAnswer[i].visibility = "won"
+                setMyWord(correctAnswer)
+            }
+            enableInput(true)
+            setLetters(newAlphabet)
+        }
+        else{
+            const wrongAnswer = [...myWord]
+            for(let i = 0; i < myWord.length; i++){
+                wrongAnswer[i].visibility = "lost"
+                setMyWord(wrongAnswer)
+                setHangman(hangmanStates[6])
+            }
+            enableInput(true)
+            setLetters(newAlphabet)
+        }
     }
 
     return (
         <>
             <main className="hangman">
-                <img src={hangman} alt={hangman} />
-                <button onClick={chooseWord}>Escolher Palavra</button>
-                <div className="targetWord">
-                    {myWord.map((letter, index) => <p key={index} className={letter.visibility}>{letter.letter}</p>)}
+                <img src={hangman} alt={hangman} data-identifier="game-image"/>
+                <button onClick={chooseWord} data-identifier="choose-word">Escolher Palavra</button>
+                <div className="target-word">
+                    {myWord.map((letter, index) => <p key={index} className={letter.visibility} data-identifier="word">{letter.letter}</p>)}
                 </div>
             </main>
 
@@ -89,8 +140,8 @@ export default function App() {
 
             <section className="guess">
                 <p>Já sei a palavra!</p>
-                <input disabled={isEnabledInput} />
-                <button>Chutar</button>
+                <input onChange={(e) => setGuess(e.target.value)} disabled={isEnabledInput} data-identifier="type-guess"/>
+                <button onClick={checkGuess} data-identifier="guess-button">Chutar</button>
             </section>
         </>
     )
