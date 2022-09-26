@@ -7,7 +7,6 @@ export default function Jogo(props) {
     function chooseWord() {
         const randomIndex = Math.floor(Math.random() * palavras.length)
         const word = palavras[randomIndex]
-        console.log(word)
         const wordArray = [];
         for (let i = 0; i < word.length; i++) {
             wordArray[i] = { letter: word[i], visibility: "" }

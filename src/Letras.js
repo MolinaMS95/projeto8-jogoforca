@@ -14,16 +14,18 @@ function Letter(props){
         const newMyWord = [...myWord]
 
         let containLetter = false
+        let corrrect = hits
         for (let i = 0; i < myWord.length; i++) {
             let wordLetter = myWord[i].letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             if (wordLetter === letter.toLowerCase()) {
-                setHits(hits+1)
+                corrrect++
                 containLetter = true
                 newMyWord[i].visibility = "visible"
                 setMyWord(newMyWord)
             }
         }
-        if ((hits+1) === myWord.length) {
+        setHits(corrrect)
+        if (corrrect === myWord.length) {
             const correctAnswer = [...myWord]
             for (let i = 0; i < myWord.length; i++) {
                 correctAnswer[i].visibility = "won"
